@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rutinas de Ejercicio</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Rutinas de Ejercicio</h1>
+    <div>
+        <input type="text" id="wordInput" placeholder="Palabra">
+        <input type="number" id="timeInput" placeholder="Tiempo (segundos)" min="6">
+        <button id="addButton">Agregar</button>
+    </div>
+    <div>
+        <input type="number" id="restInput" placeholder="Tiempo de descanso (segundos)" min="0">
+    </div>
+    <ul id="routineList"></ul>
+    <button id="startButton">Iniciar Rutina</button>
+    <button id="pauseButton">Pausar</button>
+    <button id="playButton">Reanudar</button>
+    <button id="stopButton">Detener</button>
+    <div id="display" style="margin-top: 20px; font-size: 24px; font-weight: bold;"></div>
+    <audio id="alertSound" src="alert.mp3"></audio>
+    <script src="script.js"></script>
+</body>
+</html>
