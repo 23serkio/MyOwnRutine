@@ -100,42 +100,42 @@ let paused = false;
 let currentIndex = 0;
 let items;
 
+function showNextItem() {
+    if (currentIndex < items.length && !paused) {
+        const item = items[currentIndex];
+        const text = item.textContent;
+        const isRest = text.startsWith('Descanso');
+        const word = isRest ? 'Descanso' : text.split(' - ')[0];
+        const time = isRest ? parseInt(text.split(' - ')[1], 10) * 1000 : parseInt(text.split(' - ')[1], 10) * 1000;
+
+        document.getElementById('display').textContent = `Palabra: ${word} - Tiempo restante: ${time / 1000} segundos`;
+
+        let countdown = time / 1000;
+        interval = setInterval(() => {
+            if (paused) return; // No actualizar si está en pausa
+            countdown--;
+            document.getElementById('display').textContent = `Palabra: ${word} - Tiempo restante: ${countdown} segundos`;
+
+            // Reproducir sonido cuando queden 6 segundos o menos
+            if (countdown <= 6 && countdown > 5) {
+                document.getElementById('alertSound').play();
+            }
+
+            if (countdown <= 0) {
+                clearInterval(interval);
+                currentIndex++;
+                showNextItem();
+            }
+        }, 1000);
+    } else {
+        document.getElementById('display').textContent = 'Rutina finalizada.';
+    }
+}
+
 document.getElementById('startButton').addEventListener('click', function() {
     items = document.querySelectorAll('#routineList li');
     currentIndex = 0;
     paused = false;
-
-    function showNextItem() {
-        if (currentIndex < items.length && !paused) {
-            const item = items[currentIndex];
-            const text = item.textContent;
-            const isRest = text.startsWith('Descanso');
-            const word = isRest ? 'Descanso' : text.split(' - ')[0];
-            const time = isRest ? parseInt(text.split(' - ')[1], 10) * 1000 : parseInt(text.split(' - ')[1], 10) * 1000;
-
-            document.getElementById('display').textContent = `Palabra: ${word} - Tiempo restante: ${time / 1000} segundos`;
-
-            let countdown = time / 1000;
-            interval = setInterval(() => {
-                if (paused) return; // No actualizar si está en pausa
-                countdown--;
-                document.getElementById('display').textContent = `Palabra: ${word} - Tiempo restante: ${countdown} segundos`;
-
-                // Reproducir sonido cuando queden 6 segundos o menos
-                if (countdown <= 6 && countdown > 5) {
-                    document.getElementById('alertSound').play();
-                }
-
-                if (countdown <= 0) {
-                    clearInterval(interval);
-                    currentIndex++;
-                    showNextItem();
-                }
-            }, 1000);
-        } else {
-            document.getElementById('display').textContent = 'Rutina finalizada.';
-        }
-    }
 
     showNextItem(); // Iniciar rutina
 });
