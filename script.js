@@ -1,7 +1,4 @@
-// Variable para almacenar rutinas guardadas
-let rutinasGuardadas = {};
-
-// Función para guardar rutina
+// Función para guardar rutina en LocalStorage
 function guardarRutina() {
     const nombreRutina = document.getElementById('nombre-rutina').value;
     if (!nombreRutina || !document.getElementById('routineList').hasChildNodes()) {
@@ -13,7 +10,8 @@ function guardarRutina() {
     const items = document.querySelectorAll('#routineList li');
     items.forEach(item => rutina.push(item.textContent));
 
-    rutinasGuardadas[nombreRutina] = rutina;
+    // Guardar rutina en LocalStorage
+    localStorage.setItem(nombreRutina, JSON.stringify(rutina));
 
     // Actualizar lista de rutinas guardadas
     const option = document.createElement('option');
@@ -26,11 +24,11 @@ function guardarRutina() {
     document.getElementById('routineList').innerHTML = ''; // Limpiar lista de ejercicios
 }
 
-// Función para cargar rutina
+// Función para cargar rutina desde LocalStorage
 function cargarRutina(nombreRutina) {
-    if (!rutinasGuardadas[nombreRutina]) return;
+    if (!localStorage.getItem(nombreRutina)) return;
 
-    const rutina = rutinasGuardadas[nombreRutina];
+    const rutina = JSON.parse(localStorage.getItem(nombreRutina));
     const routineList = document.getElementById('routineList');
     routineList.innerHTML = ''; // Limpiar lista actual
 
@@ -41,6 +39,43 @@ function cargarRutina(nombreRutina) {
     });
 
     alert(`Rutina '${nombreRutina}' cargada exitosamente.`);
+}
+
+// Función para eliminar rutina de LocalStorage
+function eliminarRutina() {
+    const nombreRutina = document.getElementById('lista-rutinas').value;
+
+    if (!nombreRutina) {
+        alert('Por favor, seleccione una rutina para eliminar.');
+        return;
+    }
+
+    // Eliminar de LocalStorage
+    localStorage.removeItem(nombreRutina);
+
+    // Eliminar opción de la lista desplegable
+    const listaRutinas = document.getElementById('lista-rutinas');
+    listaRutinas.removeChild(listaRutinas.querySelector(`option[value="${nombreRutina}"]`));
+
+    alert(`Rutina '${nombreRutina}' eliminada.`);
+
+    // Limpiar la lista de la rutina actual
+    document.getElementById('routineList').innerHTML = '';
+}
+
+// Actualizar la lista de rutinas guardadas al cargar la página
+function actualizarListaRutinas() {
+    const listaRutinas = document.getElementById('lista-rutinas');
+    listaRutinas.innerHTML = '<option value="">Selecciona una rutina</option>'; // Limpiar la lista actual
+
+    // Obtener todas las claves de LocalStorage
+    for (let i = 0; i < localStorage.length; i++) {
+        const nombreRutina = localStorage.key(i);
+        const option = document.createElement('option');
+        option.value = nombreRutina;
+        option.textContent = nombreRutina;
+        listaRutinas.appendChild(option);
+    }
 }
 
 // Código de tu rutina
@@ -130,3 +165,8 @@ document.getElementById('stopButton').addEventListener('click', function() {
     paused = false;
     document.getElementById('display').textContent = 'Rutina finalizada.';
 });
+
+// Cargar rutinas guardadas al cargar la página
+window.onload = function() {
+    actualizarListaRutinas();
+};
