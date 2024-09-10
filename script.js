@@ -1,4 +1,7 @@
-// Función para guardar rutina en LocalStorage
+// Variable para almacenar rutinas guardadas
+let rutinasGuardadas = JSON.parse(localStorage.getItem('rutinasGuardadas')) || {};
+
+// Función para guardar rutina
 function guardarRutina() {
     const nombreRutina = document.getElementById('nombre-rutina').value;
     if (!nombreRutina || !document.getElementById('routineList').hasChildNodes()) {
@@ -10,8 +13,10 @@ function guardarRutina() {
     const items = document.querySelectorAll('#routineList li');
     items.forEach(item => rutina.push(item.textContent));
 
-    // Guardar rutina en LocalStorage
-    localStorage.setItem(nombreRutina, JSON.stringify(rutina));
+    rutinasGuardadas[nombreRutina] = rutina;
+
+    // Actualizar `localStorage`
+    localStorage.setItem('rutinasGuardadas', JSON.stringify(rutinasGuardadas));
 
     // Actualizar lista de rutinas guardadas
     const option = document.createElement('option');
@@ -24,11 +29,11 @@ function guardarRutina() {
     document.getElementById('routineList').innerHTML = ''; // Limpiar lista de ejercicios
 }
 
-// Función para cargar rutina desde LocalStorage
+// Función para cargar rutina
 function cargarRutina(nombreRutina) {
-    if (!localStorage.getItem(nombreRutina)) return;
+    if (!rutinasGuardadas[nombreRutina]) return;
 
-    const rutina = JSON.parse(localStorage.getItem(nombreRutina));
+    const rutina = rutinasGuardadas[nombreRutina];
     const routineList = document.getElementById('routineList');
     routineList.innerHTML = ''; // Limpiar lista actual
 
@@ -41,41 +46,27 @@ function cargarRutina(nombreRutina) {
     alert(`Rutina '${nombreRutina}' cargada exitosamente.`);
 }
 
-// Función para eliminar rutina de LocalStorage
+// Función para eliminar rutina
 function eliminarRutina() {
     const nombreRutina = document.getElementById('lista-rutinas').value;
-
     if (!nombreRutina) {
-        alert('Por favor, seleccione una rutina para eliminar.');
+        alert('Debe seleccionar una rutina para eliminar.');
         return;
     }
 
-    // Eliminar de LocalStorage
-    localStorage.removeItem(nombreRutina);
+    delete rutinasGuardadas[nombreRutina];
 
-    // Eliminar opción de la lista desplegable
+    // Actualizar `localStorage`
+    localStorage.setItem('rutinasGuardadas', JSON.stringify(rutinasGuardadas));
+
+    // Actualizar lista de rutinas guardadas
     const listaRutinas = document.getElementById('lista-rutinas');
     listaRutinas.removeChild(listaRutinas.querySelector(`option[value="${nombreRutina}"]`));
 
-    alert(`Rutina '${nombreRutina}' eliminada.`);
-
-    // Limpiar la lista de la rutina actual
+    // Limpiar la lista de ejercicios
     document.getElementById('routineList').innerHTML = '';
-}
 
-// Actualizar la lista de rutinas guardadas al cargar la página
-function actualizarListaRutinas() {
-    const listaRutinas = document.getElementById('lista-rutinas');
-    listaRutinas.innerHTML = '<option value="">Selecciona una rutina</option>'; // Limpiar la lista actual
-
-    // Obtener todas las claves de LocalStorage
-    for (let i = 0; i < localStorage.length; i++) {
-        const nombreRutina = localStorage.key(i);
-        const option = document.createElement('option');
-        option.value = nombreRutina;
-        option.textContent = nombreRutina;
-        listaRutinas.appendChild(option);
-    }
+    alert(`Rutina '${nombreRutina}' eliminada exitosamente.`);
 }
 
 // Código de tu rutina
@@ -166,7 +157,13 @@ document.getElementById('stopButton').addEventListener('click', function() {
     document.getElementById('display').textContent = 'Rutina finalizada.';
 });
 
-// Cargar rutinas guardadas al cargar la página
+// Cargar rutinas guardadas en la página
 window.onload = function() {
-    actualizarListaRutinas();
+    const listaRutinas = document.getElementById('lista-rutinas');
+    Object.keys(rutinasGuardadas).forEach(nombreRutina => {
+        const option = document.createElement('option');
+        option.value = nombreRutina;
+        option.textContent = nombreRutina;
+        listaRutinas.appendChild(option);
+    });
 };
