@@ -8,21 +8,48 @@
 </head>
 <body>
     <h1>Rutinas de Ejercicio</h1>
+
+    <!-- Formulario para crear un ejercicio en la rutina -->
     <div>
-        <input type="text" id="wordInput" placeholder="Palabra">
+        <input type="text" id="wordInput" placeholder="Ejercicio/Palabra">
         <input type="number" id="timeInput" placeholder="Tiempo (segundos)" min="6">
-        <button id="addButton">Agregar</button>
-    </div>
-    <div>
         <input type="number" id="restInput" placeholder="Tiempo de descanso (segundos)" min="0">
+        <button id="addButton">Agregar a la rutina</button>
     </div>
+
+    <!-- Lista de ejercicios de la rutina -->
     <ul id="routineList"></ul>
-    <button id="startButton">Iniciar Rutina</button>
-    <button id="pauseButton">Pausar</button>
-    <button id="playButton">Reanudar</button>
-    <button id="stopButton">Detener</button>
+
+    <!-- Botones de control de la rutina -->
+    <div>
+        <button id="startButton">Iniciar Rutina</button>
+        <button id="pauseButton">Pausar</button>
+        <button id="playButton">Reanudar</button>
+        <button id="stopButton">Detener</button>
+    </div>
+
+    <!-- Mostrar el ejercicio y tiempo actual -->
     <div id="display" style="margin-top: 20px; font-size: 24px; font-weight: bold;"></div>
+
+    <!-- Sonido de alerta cuando el tiempo esté por terminar -->
     <audio id="alertSound" src="alert.mp3"></audio>
+
+    <!-- Formulario para crear y guardar rutinas -->
+    <h2>Guardar Rutinas</h2>
+    <form id="form-rutina">
+        <label for="nombre-rutina">Nombre de la rutina:</label>
+        <input type="text" id="nombre-rutina" required>
+        <button type="button" onclick="guardarRutina()">Guardar Rutina</button>
+    </form>
+
+    <!-- Lista para seleccionar y cargar rutinas guardadas -->
+    <h2>Rutinas Guardadas</h2>
+    <label for="lista-rutinas">Selecciona una rutina:</label>
+    <select id="lista-rutinas" onchange="cargarRutina(this.value)">
+        <option value="">Selecciona una rutina</option>
+    </select>
+
+    <!-- Enlace al archivo JavaScript -->
     <script src="script.js"></script>
 </body>
 </html>

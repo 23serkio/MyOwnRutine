@@ -1,3 +1,49 @@
+// Variable para almacenar rutinas guardadas
+let rutinasGuardadas = {};
+
+// Función para guardar rutina
+function guardarRutina() {
+    const nombreRutina = document.getElementById('nombre-rutina').value;
+    if (!nombreRutina || !document.getElementById('routineList').hasChildNodes()) {
+        alert('Debe ingresar un nombre y crear al menos un ejercicio.');
+        return;
+    }
+
+    const rutina = [];
+    const items = document.querySelectorAll('#routineList li');
+    items.forEach(item => rutina.push(item.textContent));
+
+    rutinasGuardadas[nombreRutina] = rutina;
+
+    // Actualizar lista de rutinas guardadas
+    const option = document.createElement('option');
+    option.value = nombreRutina;
+    option.textContent = nombreRutina;
+    document.getElementById('lista-rutinas').appendChild(option);
+
+    alert(`Rutina '${nombreRutina}' guardada exitosamente.`);
+    document.getElementById('nombre-rutina').value = ''; // Limpiar nombre
+    document.getElementById('routineList').innerHTML = ''; // Limpiar lista de ejercicios
+}
+
+// Función para cargar rutina
+function cargarRutina(nombreRutina) {
+    if (!rutinasGuardadas[nombreRutina]) return;
+
+    const rutina = rutinasGuardadas[nombreRutina];
+    const routineList = document.getElementById('routineList');
+    routineList.innerHTML = ''; // Limpiar lista actual
+
+    rutina.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        routineList.appendChild(li);
+    });
+
+    alert(`Rutina '${nombreRutina}' cargada exitosamente.`);
+}
+
+// Código de tu rutina
 document.getElementById('addButton').addEventListener('click', function() {
     const word = document.getElementById('wordInput').value;
     const time = parseInt(document.getElementById('timeInput').value, 10);
@@ -8,14 +54,14 @@ document.getElementById('addButton').addEventListener('click', function() {
         li.textContent = `${word} - ${time} segundos`;
         document.getElementById('routineList').appendChild(li);
 
-        // Add rest period if a rest time is specified
+        // Añadir periodo de descanso
         if (!isNaN(restTime) && restTime > 0) {
             const restLi = document.createElement('li');
             restLi.textContent = `Descanso - ${restTime} segundos`;
             document.getElementById('routineList').appendChild(restLi);
         }
 
-        // Clear input fields
+        // Limpiar campos de entrada
         document.getElementById('wordInput').value = '';
         document.getElementById('timeInput').value = '';
     } else if (time < 6) {
@@ -45,11 +91,11 @@ document.getElementById('startButton').addEventListener('click', function() {
 
             let countdown = time / 1000;
             interval = setInterval(() => {
-                if (paused) return; // Stop updating if paused
+                if (paused) return; // No actualizar si está en pausa
                 countdown--;
                 document.getElementById('display').textContent = `Palabra: ${word} - Tiempo restante: ${countdown} segundos`;
 
-                // Play sound when 6 seconds or less remain
+                // Reproducir sonido cuando queden 6 segundos o menos
                 if (countdown <= 6 && countdown > 5) {
                     document.getElementById('alertSound').play();
                 }
@@ -65,7 +111,7 @@ document.getElementById('startButton').addEventListener('click', function() {
         }
     }
 
-    showNextItem(); // Start the routine
+    showNextItem(); // Iniciar rutina
 });
 
 document.getElementById('pauseButton').addEventListener('click', function() {
@@ -75,7 +121,7 @@ document.getElementById('pauseButton').addEventListener('click', function() {
 document.getElementById('playButton').addEventListener('click', function() {
     if (paused) {
         paused = false;
-        showNextItem(); // Resume the routine
+        showNextItem(); // Reanudar rutina
     }
 });
 
